@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="./images/Logo.png" type="image/png">
+
+    <title>Sciastra private limited</title>
+    <meta name="description" content="Sciastra Private Limited - A leading technology and innovation company.">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.quilljs.com/1.3.6/quill.snow.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="./css/indexPage.css" />
+    <link rel="stylesheet" href="./css/singleBlogPost.css" />
+    <link rel="stylesheet" href="./css/createBlogPost.css" />
+  </head>
+  <body>
+    <header class="header single_blog">
+      <div class="header_container">
+        <div class="header_logo">
+          <a href="/">
+            <img src="images/logo.png" alt="Logo" />
+          </a>
+        </div>
+        <nav class="header_navbar">
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/blog">Blog</a></li>
+            <li><a href="/courses">Courses</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <section class="create_blog_post">
+      <div class="create_blog_post_container">
+        <h1>Create a New Blog Post</h1>
+        <form id="create-blog-form">
+          <div class="form-group">
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" required />
+          </div>
+
+          <div class="form-group">
+            <label for="desc">Description:</label>
+            <textarea id="desc" name="desc" required></textarea>
+          </div>
+
+         <div class="form-group">
+          <label for="publish_at">Publish At:</label>
+          <input
+            type="datetime-local"
+            id="publish_at"
+            name="publish_at"
+            required
+          />
+         </div>
+
+          <div class="form-group">
+            <label for="image">Image URL:</label>
+            <input type="url" id="image" name="image" required />
+          </div>
+
+          <button type="submit" class="submit-btn">Submit</button>
+        </form>
+      </div>
+    </section>
+  </body>
+
+  <script>
+    document
+      .getElementById("create-blog-form")
+      .addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const title = document.getElementById("title").value;
+        const desc = document.getElementById("desc").value;
+        const image = document.getElementById("image").value;
+        const publish_at = document.getElementById("publish_at").value;
+        const status = "draft";
+
+        if (title.length < 20) {
+          return alert(
+            "Please enter a description with at least 20 characters."
+          );
+        }
+
+        try {
+          const response = await fetch("https://sciastraapi.onrender.com/api/blogs/create-blog", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ title, desc, image,publish_at,status }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            alert(data);
+            document.getElementById("create-blog-form").reset();
+            window.location.href = "./index.html";
+          } else {
+            console.error("Error:", data);
+            alert("Failed to create the blog post");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("An error occurred while creating the blog post");
+        }
+      });
+  </script>
+</html>

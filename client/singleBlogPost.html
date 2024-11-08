@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sciastra Private Limited - Blog</title>
+  <meta name="description" content="Sciastra Private Limited - A leading technology and innovation company.">
+  <link rel="icon" href="./images/Logo.png" type="image/png">
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="./css/indexPage.css" />
+    <link rel="stylesheet" href="./css/singleBlogPost.css" />
+  </head>
+  <body>
+    <header class="header single_blog">
+      <div class="header_container">
+        <div class="header_logo">
+          <a href="/">
+            <img src="images/logo.png" alt="Logo" />
+          </a>
+        </div>
+        <nav class="header_navbar">
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/blog">Blog</a></li>
+            <li><a href="/courses">Courses</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <section class="single_blog_post">
+      <div class="single_blog_post_container">
+        
+        <img id="blog-image" src="" alt="" />
+
+        <div class="single_date_edit_update_btn">
+          <h4 id="publish-date"></h4>
+          <div class="buttons">
+            <button class="edit"><a id="edit-link">Edit</a></button>
+            <button class="delete" onclick="deleteBlogPost()">Delete</button>
+          </div>
+        </div>
+
+        <h1 id="post-title"></h1>
+        <p id="post-description"></p>
+      </div>
+    </section>
+
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      const postId = urlParams.get("id");
+
+      fetch(`https://sciastraapi.onrender.com/api/blogs/single-blog?id=${postId}`)
+        .then((response) => response.json())
+        .then((data) => {
+          document.getElementById("blog-image").src = data.image;
+
+          document.getElementById("post-title").textContent = data.title;
+          document.getElementById("post-description").textContent = data.desc;
+
+          const editLink = document.getElementById("edit-link");
+          editLink.href = `./editBlogPost.html?id=${postId}`;
+        })
+        .catch((error) => {
+          console.error("Error fetching blog data:", error);
+        });
+
+      function deleteBlogPost() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const postId = urlParams.get("id"); 
+
+        fetch(`https://sciastraapi.onrender.com/api/blogs/delete-blog?id=${postId}`, {
+          method: "DELETE",
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            alert(data.message);
+            window.location.href = "/"; 
+          })
+          .catch((error) => {
+            console.error("Error deleting blog post:", error);
+          });
+      }
+    </script>
+  </body>
+</html>
